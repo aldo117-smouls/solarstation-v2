@@ -1,0 +1,18 @@
+# Service pour l'installation existante /home/ludo/solarstation.
+[Unit]
+Description=SolarStation - batterie et passerelle MeshCore
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ludo
+SupplementaryGroups=dialout i2c
+WorkingDirectory=/home/ludo/solarstation
+ExecStart=/usr/bin/python3 /home/ludo/solarstation/main.py --config /home/ludo/solarstation/config.json
+Restart=on-failure
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

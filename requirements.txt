@@ -1,0 +1,7 @@
+# Dépendances matérielles installées sur le Raspberry Pi.
+meshcore
+adafruit-circuitpython-ina219
+# Nécessaire à l'accès I2C Adafruit sur Raspberry Pi, selon l'image du système.
+adafruit-blinka
+# Outils de validation optionnels (pas requis pour faire tourner le démon).
+pytest
