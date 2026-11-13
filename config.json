@@ -21,8 +21,8 @@
   "rotation_octets": 1048576,
   "dossier_outbox": "/home/ludo/solarstation/data/outbox",
   "reconnexion_secondes": 10,
-  "meteo_latitude": 48.8566,
-  "meteo_longitude": 2.3522,
-  "meteo_ville": "Paris",
+  "meteo_latitude": 46.458715,
+  "meteo_longitude": 0.856251,
+  "meteo_ville": "Station",
   "niveau_log": "INFO"
 }

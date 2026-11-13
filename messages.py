@@ -36,7 +36,7 @@ def alerte(texte):
 
 
 def aide():
-    return court("Commandes: tension, etat, info, ping [secondes], ping stop, aide")
+    return court("Commandes: tension, etat, info, meteo [ville], ping [s], ping stop, aide")
 
 
 def donnees(etat):

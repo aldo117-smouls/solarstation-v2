@@ -4,15 +4,16 @@ L'API de réception est raccordée dans main.py avec EventType.CHANNEL_MSG_RECV,
 MeshCore.subscribe(..., attribute_filters={"channel_idx": index}) puis
 start_auto_message_fetching(), comme dans le main.py actuel de l'utilisateur.
 """
+import asyncio
 import logging
 import re
 from datetime import datetime
 
-from messages import aide, court, info, tension
+from messages import aide, court, info, meteo as meteo_message, tension
 
 logger = logging.getLogger(__name__)
 ALIASES = {"voltage": "tension", "batt": "tension", "batterie": "tension",
-           "status": "etat", "infos": "info", "help": "aide"}
+           "status": "etat", "infos": "info", "help": "aide", "meteo": "meteo", "météo": "meteo"}
 
 
 def extraire_texte(event):
@@ -92,7 +93,6 @@ class MeshBridge:
         await self.send(court("Pong " + stamp + (signalement(event) if event else "")))
 
     async def _repeat_ping(self, interval):
-        import asyncio
         import time
         deadline = time.monotonic() + float(self.config.get("ping_max_duree_min", 30)) * 60
         try:
@@ -105,12 +105,25 @@ class MeshBridge:
             raise
 
     async def _start_ping(self, seconds):
-        import asyncio
         seconds = max(int(self.config.get("ping_min", 30)), seconds)
         if self.ping_task:
             self.ping_task.cancel()
         await self.reply_pong()
         self.ping_task = asyncio.create_task(self._repeat_ping(seconds))
+
+    async def _reply_meteo(self, ville=None):
+        """Interroge Open-Meteo hors de la boucle asynchrone (appel bloquant)."""
+        ville = ville or self.config.get("meteo_ville")
+        try:
+            if ville and ville.lower() == str(self.config.get("meteo_ville", "")).lower():
+                lat, lon = self.config.get("meteo_latitude"), self.config.get("meteo_longitude")
+            else:
+                lat = lon = None
+            texte = await asyncio.to_thread(meteo_message, lat, lon, ville)
+        except Exception:
+            logger.exception("Météo indisponible")
+            texte = "SolarStation | Météo indisponible"
+        await self.send(texte)
 
     async def handle_text(self, text, event=None):
         """Exécute uniquement les commandes documentées et ignore les autres."""
@@ -133,6 +146,8 @@ class MeshBridge:
             await self.send(court(f"SolarStation | {state.tension:.2f} V | {state.etat} | {state.niveau} | {state.tendance}") if state else "SolarStation | Etat indisponible")
         elif cmd == "info":
             await self.send(info(state))
+        elif cmd == "meteo":
+            await self._reply_meteo(arg)
         elif cmd == "aide":
             await self.send(aide())
         else:
