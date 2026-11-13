@@ -8,8 +8,8 @@ Wants=network-online.target
 Type=simple
 User=ludo
 SupplementaryGroups=dialout i2c
-WorkingDirectory=/home/ludo/solarstation
-ExecStart=/usr/bin/python3 /home/ludo/solarstation/main.py --config /home/ludo/solarstation/config.json
+WorkingDirectory=/home/ludo/solarstation-v2
+ExecStart=/usr/bin/python3 /home/ludo/solarstation-v2/main.py --config /home/ludo/solarstation-v2/config.json
 Restart=on-failure
 RestartSec=5
 Environment=PYTHONUNBUFFERED=1
