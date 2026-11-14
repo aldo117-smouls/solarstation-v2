@@ -94,7 +94,7 @@ class MeshBridge:
 
     async def _repeat_ping(self, interval):
         import time
-        deadline = time.monotonic() + float(self.config.get("ping_max_duree_min", 30)) * 60
+        deadline = time.monotonic() + float(self.config.get("ping_max_duree_min", 1440)) * 60
         try:
             while time.monotonic() < deadline:
                 await asyncio.sleep(min(interval, max(0, deadline - time.monotonic())))
