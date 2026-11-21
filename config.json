@@ -15,7 +15,7 @@
   "seuil_bas": 12.9,
   "seuil_retour": 13.2,
   "rappel_minutes": 30,
-  "ping_min": 10,
+  "ping_min": 1,
   "ping_max_duree_min": 1440,
   "fichier_historique": "/home/ludo/solarstation/data/history.jsonl",
   "rotation_octets": 1048576,
